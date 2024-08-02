@@ -36,80 +36,68 @@ class _LoginViewState extends State<LoginView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Let\'s Login'),backgroundColor: Color.fromARGB(255, 239, 168, 168),),
-      body: FutureBuilder(
-        future: Firebase.initializeApp(
-               options: DefaultFirebaseOptions.currentPlatform,
-             ), 
-
-        builder: (context, snapshot) {
-
-          switch (snapshot.connectionState){
-            
-            case ConnectionState.done:
-              // TODO: Handle this case.
-               return Column(
-          children:[
-             TextField(
-              controller: _email,
-              autocorrect: false,
-              enableSuggestions: false,
-              keyboardType: TextInputType.emailAddress,
-              decoration: const InputDecoration(
-                hintText: 'Enter your email',
-              ),
-            ),
-             TextField(
-              controller: _password,
-              obscureText: true,
-              enableSuggestions: false,
-              autocorrect: false,
-              decoration: const InputDecoration(
-                hintText: 'Enter your password',
-              ),
-             ),
-          TextButton(onPressed: () async{
-        
-            final email = _email.text;
-            final password = _password.text;
-        
-            try {
-               
-        
-            final UserCredential=  await FirebaseAuth.instance.signInWithEmailAndPassword(email: email, password: password);
-        
-            print(UserCredential);
-            } on FirebaseAuthException catch(f){
-              print(f);
-              if(f.code=='invalid-credential'){
-                print('register first');
-              }
-              else{
-                print(f.code);
-                if(f.code=='wrong-password'){
-                  print('wrong password');
-                }
-              }
-            } 
-            catch (e) {
-              print('something bad happened');
-              print(e.runtimeType);
-            }
-        
-        },child: const Text('Login'),
-        ),
-        
-        ]);
-          
-        default:
-        return Text('Loading...');
-          }
-
-         
-
-        },
-        
+      appBar: AppBar(
+        title: Text('Login here'),
       ),
+      body: Column(
+            children:[
+               TextField(
+                controller: _email,
+                autocorrect: false,
+                enableSuggestions: false,
+                keyboardType: TextInputType.emailAddress,
+                decoration: const InputDecoration(
+                  hintText: 'Enter your email',
+                ),
+              ),
+               TextField(
+                controller: _password,
+                obscureText: true,
+                enableSuggestions: false,
+                autocorrect: false,
+                decoration: const InputDecoration(
+                  hintText: 'Enter your password',
+                ),
+               ),
+            TextButton(onPressed: () async{
+          
+              final email = _email.text;
+              final password = _password.text;
+          
+              try {
+                 
+          
+              final UserCredential=  await FirebaseAuth.instance.signInWithEmailAndPassword(email: email, password: password);
+          
+              print(UserCredential);
+              } on FirebaseAuthException catch(f){
+                print(f);
+                if(f.code=='invalid-credential'){
+                  print('register first');
+                }
+                else{
+                  print(f.code);
+                  if(f.code=='wrong-password'){
+                    print('wrong password');
+                  }
+                }
+              } 
+              catch (e) {
+                print('something bad happened');
+                print(e.runtimeType);
+              }
+          
+          },child: const Text('Login'),
+          ),
+      
+          TextButton(onPressed: (){
+            Navigator.of(context).pushNamedAndRemoveUntil('/register/', 
+            (route)=>false,
+            );
+          },
+          child: Text('Not registered yet? Register here!')),
+          
+          ]),
     );
   }
 }
