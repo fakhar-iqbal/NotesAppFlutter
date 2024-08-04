@@ -1,8 +1,11 @@
 
+import 'dart:developer';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:notesfirst/constants/routes.dart';
 import 'package:notesfirst/firebase_options.dart';
 
 /// This Dart class named HomePage extends StatelessWidget.
@@ -69,32 +72,32 @@ class _LoginViewState extends State<LoginView> {
           
               final UserCredential=  await FirebaseAuth.instance.signInWithEmailAndPassword(email: email, password: password);
 
-              print(UserCredential);
-              Navigator.of(context).pushNamedAndRemoveUntil('/notesview/', 
+              log(UserCredential.toString());
+              Navigator.of(context).pushNamedAndRemoveUntil(notesRoute, 
             (route)=>false,
             );
               } on FirebaseAuthException catch(f){
-                print(f);
+                log(f.toString());
                 if(f.code=='invalid-credential'){
-                  print('register first');
+                  log('register first');
                 }
                 else{
-                  print(f.code);
+                  log(f.code);
                   if(f.code=='wrong-password'){
-                    print('wrong password');
+                    log('wrong password');
                   }
                 }
               } 
               catch (e) {
-                print('something bad happened');
-                print(e.runtimeType);
+                log('something bad happened');
+                log(e.runtimeType.toString());
               }
           
           },child: const Text('Login'),
           ),
       
           TextButton(onPressed: (){
-            Navigator.of(context).pushNamedAndRemoveUntil('/register/', 
+            Navigator.of(context).pushNamedAndRemoveUntil(registerRoute, 
             (route)=>false,
             );
           },
