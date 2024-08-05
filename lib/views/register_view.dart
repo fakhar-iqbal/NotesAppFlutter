@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:notesfirst/constants/routes.dart';
+import 'package:notesfirst/utilities/show_error_dialog.dart';
 
 
 
@@ -71,8 +72,11 @@ class _RegisterViewState extends State<RegisterView> {
               final UserCredential=  await FirebaseAuth.instance.createUserWithEmailAndPassword(email: email, password: password);
           
           } on FirebaseAuthException catch (e) {
-            log(e.code);
-          }
+            await showErrorDialog(context, e.code);
+          } catch (e) {
+                await showErrorDialog(context,e.toString());
+                log(e.runtimeType.toString());
+              }
           
           },child: const Text('Register'),
           ),
@@ -88,6 +92,7 @@ class _RegisterViewState extends State<RegisterView> {
     );
   }
 }
+
 
 
 

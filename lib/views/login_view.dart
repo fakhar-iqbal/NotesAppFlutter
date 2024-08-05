@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:notesfirst/constants/routes.dart';
 import 'package:notesfirst/firebase_options.dart';
+import 'package:notesfirst/utilities/show_error_dialog.dart';
 
 /// This Dart class named HomePage extends StatelessWidget.
 class LoginView extends StatefulWidget {
@@ -78,18 +79,10 @@ class _LoginViewState extends State<LoginView> {
             );
               } on FirebaseAuthException catch(f){
                 log(f.toString());
-                if(f.code=='invalid-credential'){
-                  log('register first');
-                }
-                else{
-                  log(f.code);
-                  if(f.code=='wrong-password'){
-                    log('wrong password');
-                  }
-                }
+                await showErrorDialog(context, f.code);
               } 
               catch (e) {
-                log('something bad happened');
+                await showErrorDialog(context,e.toString());
                 log(e.runtimeType.toString());
               }
           
