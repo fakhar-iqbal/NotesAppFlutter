@@ -1,3 +1,5 @@
+import 'package:firebase_core/firebase_core.dart';
+import 'package:notesfirst/firebase_options.dart';
 import 'package:notesfirst/services/auth/auth_user.dart';
 import 'package:notesfirst/services/auth/auth_provider.dart';
 import 'package:notesfirst/services/auth/auth_exception.dart';
@@ -5,6 +7,13 @@ import 'package:firebase_auth/firebase_auth.dart' show FirebaseAuth, FirebaseAut
 
 
 class FirebaseAuthProvider implements AuthProvider{
+
+  @override 
+  Future<void> initialize()async{
+    await Firebase.initializeApp(
+              options: DefaultFirebaseOptions.currentPlatform,
+              );
+  }
   @override
   Future<void> logOut()async{
     final user =  FirebaseAuth.instance.currentUser; 
@@ -76,7 +85,7 @@ class FirebaseAuthProvider implements AuthProvider{
   }
 
   @override   
-  Future<void> sendEmailVerification()async {
+  Future<void> SendEmailVerification()async {
     final user = FirebaseAuth.instance.currentUser;
     if(user!=null){
       await user.sendEmailVerification();

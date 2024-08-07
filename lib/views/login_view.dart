@@ -1,12 +1,13 @@
 
 import 'dart:developer';
 
+
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:notesfirst/constants/routes.dart';
-import 'package:notesfirst/firebase_options.dart';
+import 'package:notesfirst/services/auth/auth_exception.dart';
+import 'package:notesfirst/services/auth/auth_service.dart';
 import 'package:notesfirst/utilities/show_error_dialog.dart';
 
 /// This Dart class named HomePage extends StatelessWidget.
@@ -69,10 +70,10 @@ class _LoginViewState extends State<LoginView> {
               final password = _password.text;
           
               try {
-              await FirebaseAuth.instance.signInWithEmailAndPassword(email: email, password: password);
+              await AuthService.firebase().logIn(email: email, password: password);
 
-              final  user = FirebaseAuth.instance.currentUser;
-              if(user?.emailVerified ?? false){
+              final  user = AuthService.firebase().currentUser;
+              if(user?.isEmailVerified ?? false){
                 //the user is verified
                 Navigator.of(context).pushNamedAndRemoveUntil(notesRoute, 
             (route)=>false,
@@ -84,13 +85,12 @@ class _LoginViewState extends State<LoginView> {
             );
               }
               
-              } on FirebaseAuthException catch(f){
-                log(f.toString());
-                await showErrorDialog(context, f.code);
-              } 
-              catch (e) {
-                await showErrorDialog(context,e.toString());
-                log(e.runtimeType.toString());
+              }on UserNotFoundAuthException{
+                await showErrorDialog(context, 'User not found');
+              } on WrongPasswordAuthException{
+                await showErrorDialog(context, 'Wrong password');
+              } on GenericAuthException{
+                await showErrorDialog(context, 'Authentication error');
               }
           
           },child: const Text('Login'),
