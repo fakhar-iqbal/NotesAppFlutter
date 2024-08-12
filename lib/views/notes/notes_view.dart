@@ -22,7 +22,7 @@ class _NotesViewState extends State<NotesView> {
   @override
   void initState() {
     _notesService = NotesService();
-    _notesService.open();
+    
     super.initState();
   }
   @override
@@ -34,9 +34,15 @@ class _NotesViewState extends State<NotesView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Notes Main View'),
+        title: const Text('Notes Appear here'),
         backgroundColor: Colors.red,
         actions:[
+          IconButton(
+            onPressed: (){
+              Navigator.of(context).pushNamed(newNoteRoute);
+            },
+            icon: const Icon(Icons.add), 
+          ),
           PopupMenuButton(
             onSelected: (value) async {
               switch(value){
@@ -65,19 +71,20 @@ class _NotesViewState extends State<NotesView> {
           switch(snapshot.connectionState){
             
             case ConnectionState.done:
-               return StreamBuilder(
+              return StreamBuilder(
                 stream: _notesService.allNotes,
                 builder: (context,snapshot){
                   switch(snapshot.connectionState){
                     
                     case ConnectionState.waiting:
+                    case ConnectionState.active:
                     return const Text('waiting for all notes...');
                     
                     default:
                     return const  CircularProgressIndicator();
                   }
                 }
-               );
+              );
             default:
               return const CircularProgressIndicator(); 
           }

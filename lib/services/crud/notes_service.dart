@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:flutter/foundation.dart';
 import 'package:notesfirst/services/crud/crud_exceptions.dart';
@@ -29,12 +30,14 @@ class NotesService{
       final createdUser = createUser(email: email);
       return createdUser;
     } catch(e){
-      rethrow;
+      final createdUser = createUser(email: email);
+      return createdUser;
+      
     }
   }
 
   Future<void> _cacheNotes()async{
-    final allNotes = await getAAllNotes();
+    final allNotes = await getAllNotes();
     _notes = allNotes.toList();
     _notesStreamController.add(_notes);
 
@@ -66,7 +69,7 @@ class NotesService{
     }
   }
 
-  Future<Iterable<DatabaseNotes>> getAAllNotes() async{
+  Future<Iterable<DatabaseNotes>> getAllNotes() async{
     await ensureOpen();
     final db = _getDatabaseOrThrow();
     final notes = await db.query(NotesTable,);
@@ -137,6 +140,7 @@ class NotesService{
     });
 
     final note = DatabaseNotes(id: noteId, text: text, userId: owner.id, isSyncedWithCloud: true,);
+    log('lio');
 
     _notes.add(note);
     _notesStreamController.add(_notes);
@@ -145,20 +149,28 @@ class NotesService{
 
   }
 
-  Future<DatabaseUser> getUser({required String email})async{
+Future<DatabaseUser> getUser({required String email}) async {
     await ensureOpen();
     final db = _getDatabaseOrThrow();
-    final results = await db.query(userTable, where: 'email=?',whereArgs:[email.toLowerCase()]);
-    if(results.isEmpty){
+
+    final results = await db.query(
+      userTable,
+      limit: 1,
+      where: 'email = ?',
+      whereArgs: [email.toLowerCase()],
+    );
+
+    if (results.isEmpty) {
       throw CouldNotFindUserException();
+    } else {
+      return DatabaseUser.fromRow(results.first);
     }
-    return DatabaseUser.fromRow(results.first);
   }
 
   Future<DatabaseUser> createUser({required String email})async{
     await ensureOpen();
     final db = _getDatabaseOrThrow();
-    final results = await db.query(userTable,limit:1,where:'email:?', whereArgs:[email.toLowerCase()]);
+    final results = await db.query(userTable,limit:1,where:'email=?', whereArgs:[email.toLowerCase()]);
     if(results.isNotEmpty){
       throw UserAlreadyExistsException();
     }
@@ -281,9 +293,9 @@ class DatabaseNotes{
 
 
 }
-const dbName = 'notes.db';
-const NotesTable = 'note';
-const userTable = 'user';
+const dbName = 'note.db';
+const NotesTable = 'Notes';
+const userTable = 'Users';
 
 const idColumn = 'id';
 const emailColumn = 'email';
@@ -291,18 +303,18 @@ const userIdColumn = 'userId';
 const textColumn = 'text';
 const isSyncedColumn = 'is_synced_with_cloud';
 const createNoteTable = '''
-            CREATE TABLE IF NOT EXISTS "note" (
+            CREATE TABLE IF NOT EXISTS "Notes" (
               "id"	INTEGER NOT NULL,
-              "user_id"	INTEGER NOT NULL,
+              "userId"	INTEGER NOT NULL,
               "text"	TEXT,
               "is_synced_with_cloud"	INTEGER NOT NULL DEFAULT 0,
               PRIMARY KEY("id" AUTOINCREMENT),
               FOREIGN KEY("id") REFERENCES "",
-              FOREIGN KEY("user_id") REFERENCES "user"("id")
+              FOREIGN KEY("userId") REFERENCES "Users"("id")
             );
 ''';
 const createUserTable = '''
-        CREATE TABLE IF NOT EXISTS "user"  (
+        CREATE TABLE IF NOT EXISTS "Users"  (
         "id"	INTEGER NOT NULL,
         "email"	TEXT NOT NULL UNIQUE,
         PRIMARY KEY("id" AUTOINCREMENT)
