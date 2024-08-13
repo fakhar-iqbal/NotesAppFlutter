@@ -148,7 +148,6 @@ class NotesService{
     });
 
     final note = DatabaseNotes(id: noteId, text: text, userId: owner.id, isSyncedWithCloud: true,);
-    log('lio');
 
     _notes.add(note);
     _notesStreamController.add(_notes);
