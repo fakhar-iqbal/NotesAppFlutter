@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:notesfirst/constants/routes.dart';
 import 'package:notesfirst/services/auth/auth_exception.dart';
 import 'package:notesfirst/services/auth/auth_service.dart';
-import 'package:notesfirst/utilities/show_error_dialog.dart';
+import 'package:notesfirst/utilities/dialogs/error_dialog.dart';
 
 
 
