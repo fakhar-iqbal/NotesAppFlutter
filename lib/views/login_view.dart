@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:notesfirst/constants/routes.dart';
 import 'package:notesfirst/services/auth/auth_exception.dart';
 import 'package:notesfirst/services/auth/bloc/auth_bloc.dart';
 import 'package:notesfirst/services/auth/bloc/auth_event.dart';
 import 'package:notesfirst/services/auth/bloc/auth_state.dart';
 import 'package:notesfirst/utilities/dialogs/error_dialog.dart';
-import 'package:notesfirst/utilities/dialogs/loading_dialog.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
