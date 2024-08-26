@@ -100,7 +100,7 @@ class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
           IconButton(onPressed:() async {
             final text = _textController.text;
             if(_note==null || text.isEmpty){
-              print('check');
+              
               await cannotShareEmptyNoteDialog(context);
             }else{
               Share.share(text);
@@ -110,27 +110,30 @@ class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
           )
         ],
       ),
-      body: FutureBuilder(
-        
-        future: createOrGetExistingNote(context),
-        builder:(context,snapshot){
-          switch(snapshot.connectionState){
-            case ConnectionState.done:
-            
-            _setupTextControllerListener();
-            
-            return TextField(
-              controller: _textController,
-              keyboardType: TextInputType.multiline,
-              maxLines: null,
-              decoration: const InputDecoration(
-                hintText: 'Start typing here...',
-              ),
-            );
-            default:
-            return const CircularProgressIndicator();
-          }
-        },
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: FutureBuilder(
+          
+          future: createOrGetExistingNote(context),
+          builder:(context,snapshot){
+            switch(snapshot.connectionState){
+              case ConnectionState.done:
+              
+              _setupTextControllerListener();
+              
+              return TextField(
+                controller: _textController,
+                keyboardType: TextInputType.multiline,
+                maxLines: null,
+                decoration: const InputDecoration(
+                  hintText: 'Start typing here...',
+                ),
+              );
+              default:
+              return const CircularProgressIndicator();
+            }
+          },
+        ),
       ),
 
     );

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:notesfirst/constants/routes.dart';
 import 'package:notesfirst/enums/menu_action.dart';
+import 'package:notesfirst/extensions/buildcontext/loc.dart';
 import 'package:notesfirst/services/auth/auth_service.dart';
 import 'package:notesfirst/services/auth/bloc/auth_bloc.dart';
 import 'package:notesfirst/services/auth/bloc/auth_event.dart';
@@ -11,7 +12,9 @@ import 'package:notesfirst/services/cloud/firebase_cloud_storage.dart';
 import 'package:notesfirst/utilities/dialogs/logout_dialog.dart';
 import 'package:notesfirst/views/notes/notes_list_view.dart';
 
-
+extension Count<T extends Iterable> on Stream<T>{
+  Stream<int> get getLength => map((event) => event.length);
+}
 
 class NotesView extends StatefulWidget {
   const NotesView({super.key});
@@ -35,7 +38,19 @@ class _NotesViewState extends State<NotesView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Notes Appear here'),
+        title: StreamBuilder(
+          stream: _notesService.allNotes(ownerUserId: userId).getLength,
+          builder: (context, AsyncSnapshot<int> snapshot) {
+            if(snapshot.hasData){
+              final notesCount = snapshot.data ?? 0;
+              final text = context.loc.notes_title(notesCount);
+              return Text(text);
+              
+            }else{
+              return const Text('');
+            }
+          }
+        ),
         backgroundColor: Colors.red,
         actions:[
           IconButton(

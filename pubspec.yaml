@@ -30,6 +30,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  
 
 
   # The following adds the Cupertino Icons font to your  application.
@@ -47,6 +48,9 @@ dependencies:
   flutter_bloc: ^8.1.6
   equatable: ^2.0.5
   flutter_launcher_icons: ^0.13.1
+  flutter_localizations:
+    sdk: flutter
+  intl: any
   
 
 dev_dependencies:
@@ -71,6 +75,7 @@ flutter:
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
+  generate: true
 
   # To add assets to your application, add an assets section, like this:
   # assets:
